@@ -26,6 +26,17 @@
 #include "ar5212/ar5212desc.h"
 
 /*
+ * Return the hardware NextTBTT in TSF
+ */
+uint64_t
+ar5212GetNextTBTT(struct ath_hal *ah)
+{
+#define TU_TO_TSF(_tu)	(((uint64_t)(_tu)) << 10)
+	return TU_TO_TSF(OS_REG_READ(ah, AR_TIMER0));
+#undef TU_TO_TSF
+}
+
+/*
  * Initialize all of the hardware registers used to
  * send beacons.  Note that for station operation the
  * driver calls ar5212SetStaBeaconTimers instead.
@@ -84,9 +95,9 @@ ar5212BeaconInit(struct ath_hal *ah,
 	case HAL_M_HOSTAP:
 	case HAL_M_IBSS:
 		bt.bt_nextdba = (next_beacon -
-			ath_hal_dma_beacon_response_time) << 3;	/* 1/8 TU */
+		    ah->ah_config.ah_dma_beacon_response_time) << 3; /* 1/8 TU */
 		bt.bt_nextswba = (next_beacon -
-			ath_hal_sw_beacon_response_time) << 3;	/* 1/8 TU */
+		    ah->ah_config.ah_sw_beacon_response_time) << 3;	/* 1/8 TU */
 		break;
 	}
 	/*
