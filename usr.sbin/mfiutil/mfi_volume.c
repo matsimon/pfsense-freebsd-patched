@@ -362,8 +362,7 @@ volume_cache(int ac, char **av)
 			break;
 		}
 		if (props.default_cache_policy != props.current_cache_policy)
-			printf(
-	"Cache disabled due to dead battery or ongoing battery relearn\n");
+			printf("Cache Disabled Due to Dead Battery\n");
 		error = 0;
 	} else {
 		new = props;
